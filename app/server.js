@@ -3,6 +3,7 @@ const { AllRouters } = require("./routers/router");
 module.exports = class Application {
   #express = require("express");
   #app = this.#express();
+
   constructor(PORT, DB_URL) {
     this.configDatabase(DB_URL);
     this.configApplication();
@@ -10,6 +11,7 @@ module.exports = class Application {
     this.createRoutes();
     this.errorhandler();
   }
+
   configApplication() {
     const path = require("path");
     this.#app.use(this.#express.json());
@@ -41,10 +43,11 @@ module.exports = class Application {
         message: "صفحه مورد نظر یافت نشد",
       });
     });
+
     this.#app.use((err, req, res, next) => {
       const status = err?.status || err?.statusCode || 500;
-      const message = err?.message || "internal server error";
-      return res.status(404).json({
+      const message = err?.message || err?.messages || "internal server error";
+      return res.send({
         status,
         success: false,
         message,
@@ -53,11 +56,6 @@ module.exports = class Application {
   }
 
   createRoutes() {
-    this.#app.get("/", (req, res) => {
-      return res.status(200).json({
-        message: "new express app",
-      });
-    });
     this.#app.use(AllRouters);
   }
 };

@@ -1,4 +1,4 @@
-const { Schema, models, model } = require("mongoose");
+const { Schema, models, model, Types } = require("mongoose");
 
 const userSchema = new Schema(
   {
@@ -19,7 +19,7 @@ const userSchema = new Schema(
       unique: true,
     },
     roles: {
-      type: Array,
+      type: [String],
       default: ["USER"],
     },
     email: {
@@ -32,11 +32,11 @@ const userSchema = new Schema(
       required: true,
     },
     skills: {
-      type: Array,
+      type: [String],
       default: [],
     },
     teams: {
-      type: Array,
+      type: [Types.ObjectId],
       default: [],
     },
   },

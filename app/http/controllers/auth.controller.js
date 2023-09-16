@@ -1,11 +1,22 @@
-const { validationResult } = require("express-validator");
-
+const { userModel } = require("../../models/user.model");
+const { hashPassword } = require("../../modules/functions");
 class AuthControllers {
-  register(req, res, next) {
-    const result = validationResult(req);
-    res.send(result);
+  async register(req, res, next) {
+    try {
+      const { username, password, mobile, email } = req.body;
+      const hashedPassword = hashPassword(password);
+      const user = await userModel.create({
+        username,
+        password: hashedPassword,
+        mobile,
+        email,
+      });
+      res.send(user);
+    } catch (err) {
+      next(err);
+    }
   }
-  login() {}
+  async login() {}
   resetPassword() {}
 }
 
