@@ -13,7 +13,7 @@ const registerValidator = (req, res, next) => {
           }
           throw { message: "نام کاربری معتبر نمی باشد" };
         }
-         { message: "نام کاربری نمی تواند خالی باشد" }
+        throw { message: "نام کاربری نمی تواند خالی باشد" }
       }),
     body("email").isEmail().withMessage("ایمیل معتبر وارد کنید"),
     body("mobile")
