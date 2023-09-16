@@ -47,7 +47,7 @@ module.exports = class Application {
     this.#app.use((err, req, res, next) => {
       const status = err?.status || err?.statusCode || 500;
       const message = err?.message || err?.messages || "internal server error";
-      return res.send({
+      return res.status(status).json({
         status,
         success: false,
         message,

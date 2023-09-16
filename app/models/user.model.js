@@ -39,6 +39,10 @@ const userSchema = new Schema(
       type: [Types.ObjectId],
       default: [],
     },
+    token: {
+      type: String,
+      default: "",
+    },
   },
   {
     timestamps: true,
