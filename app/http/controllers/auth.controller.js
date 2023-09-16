@@ -1,5 +1,7 @@
 class AuthControllers {
-  register() {}
+  register(req,res,next) {
+    res.send({message:"message"})
+  }
   login() {}
   resetPassword() {}
 }
