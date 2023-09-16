@@ -47,7 +47,32 @@ const registerValidator = (req, res, next) => {
       }),
   ];
 };
+const loginValidator = (req, res, next) => {
+  return [
+    body("username")
+      .isLength({ min: 5, max: 20 })
+      .withMessage("نام کاربری باید بین 5 تا 20 کاراکتر باشد")
+      .custom(async (username, ctx) => {
+        if (username) {
+          const usernameRegexCheck = /^[a-z+][a-z0-9]{4,19}/gim;
+          if (username.match(usernameRegexCheck)) {
+            return true;
+          }
+          throw "نام کاربری معتبر نمی باشد";
+        }
+        throw "نام کاربری نمی تواند خالی باشد";
+      }),
 
+    body("password")
+      .isLength({ min: 5, max: 20 })
+      .withMessage(" رمز عبور باید بین 5 تا 20 کاراکتر باشد")
+      .custom((value, ctx) => {
+        if (!value) throw "رمز عبور نمی تواند خالی باشد";
+        return true;
+      }),
+  ];
+};
 module.exports = {
   registerValidator,
+  loginValidator,
 };

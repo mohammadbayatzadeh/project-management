@@ -1,5 +1,5 @@
 const { userModel } = require("../../models/user.model");
-const { hashPassword } = require("../../modules/functions");
+const { hashPassword, comparePasswords } = require("../../modules/functions");
 class AuthControllers {
   async register(req, res, next) {
     try {
@@ -16,7 +16,20 @@ class AuthControllers {
       next(err);
     }
   }
-  async login() {}
+  async login(req,res,next) {
+    try {
+      const { username, password } = req.body;
+      const existingUser = await userModel.findOne({ username });
+      if (!existingUser)
+        throw { status: 404, message: "نام کاربری یا رمز عبور اشتباه می باشد" };
+      const verify = comparePasswords(password, existingUser.password);
+      if (!verify)
+        throw { status: 404, message: "نام کاربری یا رمز عبور اشتباه می باشد" };
+      res.send("ok");
+    } catch (err) {
+      next(err);
+    }
+  }
   resetPassword() {}
 }
 
