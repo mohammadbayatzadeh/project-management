@@ -1,11 +1,9 @@
+const { UserControllers } = require("../http/controllers/user.controller");
+const { checkLogin } = require("../http/middlewares/autoLogin");
+
 const router = require("express").Router();
 
-router.get('/' , (req,res) =>{
-  res.status(200).json({
-    message:"user route"
-  })
-})
-
+router.get("/profile", checkLogin, UserControllers.getProfile);
 
 module.exports = {
   userRouter: router,

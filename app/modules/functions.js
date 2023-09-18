@@ -1,5 +1,5 @@
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
-const { sign } = require("jsonwebtoken");
+const { sign, verify } = require("jsonwebtoken");
 
 const hashPassword = (password) => {
   const salt = genSaltSync(10);
@@ -16,8 +16,18 @@ const generateToken = (payload) => {
   });
   return token;
 };
+
+const verifyToken = (token) => {
+  try {
+    const result = verify(token, process.env.SECRET_KEY);
+    return result;
+  } catch (err) {
+    throw { status: 401, message: "لطفا وارد حساب کاربری خود شوید" };
+  }
+};
 module.exports = {
   hashPassword,
   comparePasswords,
   generateToken,
+  verifyToken,
 };
