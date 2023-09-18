@@ -4,9 +4,11 @@ const userSchema = new Schema(
   {
     firstName: {
       type: String,
+      default: "",
     },
     lastName: {
       type: String,
+      default: "",
     },
     username: {
       type: String,
