@@ -1,5 +1,5 @@
-const { Types } = require("mongoose");
 const { userModel } = require("../../models/user.model");
+const path = require("path");
 
 class UserControllers {
   getProfile(req, res, next) {
@@ -32,7 +32,7 @@ class UserControllers {
         return res.status(200).json({
           status: 200,
           success: true,
-          message: " کاربر با موفثیت به روز رسانی شد",
+          message: " کاربر با موفقیت به روز رسانی شد",
         });
       }
       throw { status: 400, message: " به روز رسانی انحام نشد" };
@@ -42,8 +42,22 @@ class UserControllers {
   }
   async postProfileimage(req, res, next) {
     try {
-      res.send({message:"ok"})
-    } catch (error) {}
+      const userID = req.user._id;
+      const filePath = req.file?.path.replace("\\", "/").substring(7);
+      const result = await userModel.updateOne(
+        { _id: userID },
+        { $set: { image: filePath } }
+      );
+      if (result.modifiedCount === 0)
+        throw { status: 400, message: "به روز رسانی با موققیا انجام نشد" };
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: " روز رسانی با موفقیت به شد",
+      });
+    } catch (error) {
+      next(error);
+    }
   }
   addSkills() {}
   editSkills() {}
