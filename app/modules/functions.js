@@ -1,5 +1,7 @@
 const { genSaltSync, hashSync, compareSync } = require("bcrypt");
 const { sign, verify } = require("jsonwebtoken");
+const fs = require("fs");
+const path = require("path");
 
 const hashPassword = (password) => {
   const salt = genSaltSync(10);
@@ -25,9 +27,28 @@ const verifyToken = (token) => {
     throw { status: 401, message: "لطفا وارد حساب کاربری خود شوید" };
   }
 };
+const createUploadPath = () => {
+  let date = new Date();
+  const Year = "" + date.getFullYear();
+  const month = "" + date.getMonth();
+  const Day = date.getDate() + "";
+  const uploadPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "public",
+    "uploads",
+    Year,
+    month,
+    Day
+  );
+  fs.mkdirSync(uploadPath, { recursive: true });
+  return path.join("public", "uploads", Year, month, Day);
+};
 module.exports = {
   hashPassword,
   comparePasswords,
   generateToken,
   verifyToken,
+  createUploadPath,
 };

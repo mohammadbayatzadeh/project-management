@@ -40,6 +40,11 @@ class UserControllers {
       next(err);
     }
   }
+  async postProfileimage(req, res, next) {
+    try {
+      res.send({message:"ok"})
+    } catch (error) {}
+  }
   addSkills() {}
   editSkills() {}
   acceptInvite() {}
