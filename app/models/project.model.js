@@ -8,10 +8,11 @@ const projectSchema = new Schema(
     },
     description: {
       type: String,
+      required: true,
     },
     image: {
       type: String,
-      default: "defaults/default.png",
+      default: "/defaults/default.png",
     },
     owner: {
       type: Types.ObjectId,
