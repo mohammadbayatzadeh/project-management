@@ -56,6 +56,9 @@ module.exports = class Application {
   }
 
   createRoutes() {
+    this.#app.get("/", (req, res) => {
+      res.send({ message: " main route" });
+    });
     this.#app.use(AllRouters);
   }
 };

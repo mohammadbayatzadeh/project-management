@@ -7,10 +7,14 @@ const { expressValidatormapper } = require("../http/middlewares/checkErrors");
 const {
   createProjectValidator,
 } = require("../http/validations/project.validation");
+const fileupload = require("express-fileupload");
+const { uploadFile } = require("../modules/express-fileupload");
 
-router.get(
+router.post(
   "/create",
+  fileupload(),
   checkLogin,
+  uploadFile,
   createProjectValidator(),
   expressValidatormapper,
   ProjectControllers.createProject

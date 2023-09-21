@@ -49,11 +49,11 @@ class UserControllers {
         { $set: { image: filePath } }
       );
       if (result.modifiedCount === 0)
-        throw { status: 400, message: "به روز رسانی با موققیا انجام نشد" };
+        throw { status: 400, message: "ثبت تصویر به خطا انجامید" };
       return res.status(200).json({
         status: 200,
         success: true,
-        message: " روز رسانی با موفقیت به شد",
+        message: "تصویر با موفقیت ثبت شد",
       });
     } catch (error) {
       next(error);
