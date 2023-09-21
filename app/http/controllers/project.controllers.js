@@ -32,12 +32,39 @@ class ProjectControllers {
       next(err);
     }
   }
-  
-  getProjectByID() {}
+
+  async getProjectByID(req, res, next) {
+    try {
+      const id = req.params.id;
+      const owner = req.user.owner;
+      const project = await projectModel.findOne({ _id: id });
+      if (!project) throw { status: 404, message: "پروژه مورد نظر یافت نشد" };
+      return res
+        .status(200)
+        .json({ status: 200, success: true, data: project });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async removeProject(req, res, next) {
+    try {
+      const id = req.params.id;
+      const owner = req.user._id;
+      const result = await projectModel.deleteOne({ owner, _id: id });
+      if (result.deletedCount === 0)
+        throw { status: 404, message: "پروژه مورد نظر یافت نشد" };
+      return res
+        .status(200)
+        .json({ status: 200, success: true, message: "پروژه مورد نظر حذف شد" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
   getProjectsOfTeam() {}
   getProjectsOfUser() {}
   updateProject() {}
-  removeProject() {}
 }
 
 module.exports = {

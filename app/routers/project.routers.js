@@ -7,10 +7,34 @@ const { expressValidatormapper } = require("../http/middlewares/checkErrors");
 const {
   createProjectValidator,
 } = require("../http/validations/project.validation");
+const { IDValidator } = require("../http/validations/id.validation");
 const fileupload = require("express-fileupload");
 const { uploadFile } = require("../modules/express-fileupload");
-router.get("/", checkLogin, ProjectControllers.getAllProjects);
 
+router.get("/", checkLogin, ProjectControllers.getAllProjects);
+router.get(
+  "/:id",
+  checkLogin,
+  IDValidator(),
+  expressValidatormapper,
+  ProjectControllers.getProjectByID
+);
+router.get(
+  "/remove/:id",
+  checkLogin,
+  IDValidator(),
+  expressValidatormapper,
+  ProjectControllers.removeProject
+);
+router.get(
+  "/edit/:id",
+  checkLogin,
+  IDValidator(),
+  expressValidatormapper,
+  ProjectControllers.updateProject
+);
+router.get("/user", checkLogin, ProjectControllers.getProjectsOfUser);
+router.get("/team", checkLogin, ProjectControllers.getProjectsOfTeam);
 router.post(
   "/create",
   fileupload(),
