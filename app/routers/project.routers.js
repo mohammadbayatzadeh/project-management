@@ -9,6 +9,7 @@ const {
 } = require("../http/validations/project.validation");
 const fileupload = require("express-fileupload");
 const { uploadFile } = require("../modules/express-fileupload");
+router.get("/", checkLogin, ProjectControllers.getAllProjects);
 
 router.post(
   "/create",

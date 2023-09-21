@@ -10,6 +10,10 @@ const projectSchema = new Schema(
       type: String,
       required: true,
     },
+    tags: {
+      type: [String],
+      default: [],
+    },
     image: {
       type: String,
       default: "/defaults/default.png",
