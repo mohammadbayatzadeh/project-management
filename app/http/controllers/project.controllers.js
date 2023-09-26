@@ -36,7 +36,6 @@ class ProjectControllers {
   async getProjectByID(req, res, next) {
     try {
       const id = req.params.id;
-      const owner = req.user.owner;
       const project = await projectModel.findOne({ _id: id });
       if (!project) throw { status: 404, message: "پروژه مورد نظر یافت نشد" };
       return res
@@ -62,9 +61,35 @@ class ProjectControllers {
     }
   }
 
+  async updateProject(req, res, next) {
+    try {
+      const owner = req.user._id;
+      const projectID = req.params.id;
+      const project = await projectModel.findOne({ _id: projectID, owner });
+      if (!project) throw { status: 404, messsage: "پروژه ای یافت نشد" };
+      const data = { ...req.body };
+      Object.entries(data).forEach(([key, value]) => {
+        if (!["title", "description", "tags"].includes(key)) delete data[key];
+        if (["", " ", 0, null, NaN, undefined].includes(value))
+          delete data[key];
+      });
+      const result = await projectModel.updateOne(
+        { _id: projectID, owner },
+        { $set: data }
+      );
+      if (result.modifiedCount === 0)
+        throw { status: 404, messsage: "پروژه ای یافت نشد" };
+
+      return res.status(200).json({
+        status: 200,
+        succes: true,
+        message: "به روز رسانی با موفقیت انجام شد",
+      });
+    } catch (err) {}
+  }
+
   getProjectsOfTeam() {}
   getProjectsOfUser() {}
-  updateProject() {}
 }
 
 module.exports = {

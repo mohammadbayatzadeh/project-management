@@ -26,7 +26,7 @@ router.get(
   expressValidatormapper,
   ProjectControllers.removeProject
 );
-router.get(
+router.post(
   "/edit/:id",
   checkLogin,
   IDValidator(),
