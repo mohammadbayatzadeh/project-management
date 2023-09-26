@@ -9,12 +9,15 @@ const teamSchema = new Schema(
     description: {
       type: String,
     },
-
-    users: {
+    teamID: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    members: {
       type: [Types.ObjectId],
       default: [],
     },
-
     owner: {
       type: Types.ObjectId,
       required: true,
