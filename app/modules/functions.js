@@ -45,10 +45,21 @@ const createUploadPath = () => {
   fs.mkdirSync(uploadPath, { recursive: true });
   return path.join("public", "uploads", Year, month, Day);
 };
+
+const createLinkForFiles = (fileAddress, req) => {
+  return (
+    req.protocol +
+    "://" +
+    req.get("host") +
+    "/" +
+    fileAddress.replace(/[\\\\]/gim, "/").substring(7)
+  );
+};
 module.exports = {
   hashPassword,
   comparePasswords,
   generateToken,
   verifyToken,
   createUploadPath,
+  createLinkForFiles,
 };

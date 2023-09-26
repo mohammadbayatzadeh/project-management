@@ -33,6 +33,15 @@ router.post(
   expressValidatormapper,
   ProjectControllers.updateProject
 );
+router.patch(
+  "/edit-profileImage/:id",
+  fileupload(),
+  checkLogin,
+  uploadFile,
+  IDValidator(),
+  expressValidatormapper,
+  ProjectControllers.updateProjectImage
+);
 router.get("/user", checkLogin, ProjectControllers.getProjectsOfUser);
 router.get("/team", checkLogin, ProjectControllers.getProjectsOfTeam);
 router.post(

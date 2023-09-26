@@ -1,15 +1,17 @@
 const { projectModel } = require("../../models/project.model");
+const { createLinkForFiles } = require("../../modules/functions");
 
 class ProjectControllers {
   async createProject(req, res, next) {
     try {
-      const { title, description, tags } = req.body;
+      const { title, description, tags, image } = req.body;
       const owner = req.user._id;
       const result = await projectModel.create({
         title,
         description,
         owner,
         tags,
+        image,
       });
       if (!result)
         throw { status: 400, message: "ایجاد پروژه با مشکل مواجه شد" };
@@ -18,13 +20,18 @@ class ProjectControllers {
         success: true,
         message: "ایجاد پروژه با موفقیات انجام شد",
       });
-    } catch (error) {}
+    } catch (error) {
+      next(error);
+    }
   }
 
   async getAllProjects(req, res, next) {
     try {
       const owner = req.user._id;
       const projects = await projectModel.find({ owner });
+      for (const project of projects) {
+        project.image = createLinkForFiles(project.image, req);
+      }
       return res
         .status(200)
         .json({ status: 200, success: true, data: projects });
@@ -38,6 +45,9 @@ class ProjectControllers {
       const id = req.params.id;
       const project = await projectModel.findOne({ _id: id });
       if (!project) throw { status: 404, message: "پروژه مورد نظر یافت نشد" };
+
+      project.image = createLinkForFiles(project.image, req);
+
       return res
         .status(200)
         .json({ status: 200, success: true, data: project });
@@ -76,6 +86,32 @@ class ProjectControllers {
       const result = await projectModel.updateOne(
         { _id: projectID, owner },
         { $set: data }
+      );
+      if (result.modifiedCount === 0)
+        throw { status: 404, messsage: "پروژه ای یافت نشد" };
+
+      return res.status(200).json({
+        status: 200,
+        succes: true,
+        message: "به روز رسانی با موفقیت انجام شد",
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async updateProjectImage(req, res, next) {
+    try {
+      const owner = req.user._id;
+      const projectID = req.params.id;
+      const { image } = req.body;
+
+      const project = await projectModel.findOne({ _id: projectID, owner });
+      if (!project) throw { status: 404, messsage: "پروژه ای یافت نشد" };
+
+      const result = await projectModel.updateOne(
+        { _id: projectID, owner },
+        { $set: { image } }
       );
       if (result.modifiedCount === 0)
         throw { status: 404, messsage: "پروژه ای یافت نشد" };

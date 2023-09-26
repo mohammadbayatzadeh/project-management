@@ -11,9 +11,9 @@ router.patch("/profile", checkLogin, UserControllers.editProfile);
 router.post(
   "/profile-image",
   checkLogin,
+  multerUpload.single("image"),
   imageValidator(),
   expressValidatormapper,
-  multerUpload.single("image"),
   UserControllers.postProfileimage
 );
 
