@@ -1,4 +1,5 @@
 const { teamModel } = require("../../models/team.model");
+const { userModel } = require("../../models/user.model");
 
 class TeamControllers {
   async getTeamsList(req, res, next) {
@@ -73,7 +74,50 @@ class TeamControllers {
       next(error);
     }
   }
-  async inviteToTeam(req, res, next) {}
+  async inviteToTeam(req, res, next) {
+    try {
+      const userID = req.user._id;
+      const { username, teamID } = req.params;
+      const team = await teamModel.findOne({
+        $or: [{ owner: userID }, { users: userID }],
+        _id: teamID,
+      });
+      if (!team)
+        throw {
+          status: 404,
+          message:
+            "تیمی برای ارسال درخواست پیدا نشد یا شما امکان ارسال درهئاست را ندارید",
+        };
+      const user = await userModel.findOne({ username });
+      if (!user) throw { status: 404, message: "کاربری یافت نشد" };
+      const invitedUser = await teamModel.findOne({
+        $or: [{ owner: user._id }, { users: user._id }],
+        _id: teamID,
+      });
+      if (!invitedUser)
+        throw { stauts: 400, message: "این کاربر قبلا دعوت شده است" };
+
+      const request = {
+        teamID,
+        caller: req.user.username,
+        stauts: "pending",
+      };
+      const updateUser = await userModel.updateOne(
+        { username },
+        { $push: { inviterequests: request } }
+      );
+      if (updateUser.modifiedCount === 0)
+        throw { status: 400, message: "ارسال درخواست موفقیت آمیز نبود" };
+
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "ارسال درخواست موفقیت آمیز بود",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   updateTeam() {}
   removeUserFromTeam() {}
