@@ -32,6 +32,12 @@ router.get(
   TeamControllers.getTeamById
 );
 
+router.post(
+  "/requset/:username/:teamID",
+  checkLogin,
+  TeamControllers.inviteToTeam
+);
+
 module.exports = {
   teamRouter: router,
 };

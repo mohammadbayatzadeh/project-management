@@ -29,7 +29,6 @@ const teamSchema = new Schema(
       type: Types.ObjectId,
       required: true,
     },
-    inviterequests: { type: [requestSchema] },
   },
   {
     timestamps: true,

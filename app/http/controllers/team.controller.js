@@ -94,7 +94,7 @@ class TeamControllers {
         $or: [{ owner: user._id }, { users: user._id }],
         _id: teamID,
       });
-      if (!invitedUser)
+      if (invitedUser)
         throw { stauts: 400, message: "این کاربر قبلا دعوت شده است" };
 
       const request = {
