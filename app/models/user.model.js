@@ -1,5 +1,12 @@
 const { Schema, models, model, Types } = require("mongoose");
 
+const requestSchema = new Schema({
+  teamId: { type: Types.ObjectId, required: true },
+  caller: { type: String, required: true },
+  requestDate: { type: Date, default: new Date() },
+  state: { type: String, default: "pending" },
+});
+
 const userSchema = new Schema(
   {
     firstName: {
@@ -23,6 +30,8 @@ const userSchema = new Schema(
       required: true,
       unique: true,
     },
+    inviterequests: { type: [requestSchema] },
+
     roles: {
       type: [String],
       default: ["USER"],
