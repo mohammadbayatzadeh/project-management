@@ -1,14 +1,20 @@
 const { TeamControllers } = require("../http/controllers/team.controller");
 const { checkLogin } = require("../http/middlewares/autoLogin");
 const { expressValidatormapper } = require("../http/middlewares/checkErrors");
+const { IDValidator } = require("../http/validations/id.validation");
 const { createTeamValidation } = require("../http/validations/team.validation");
 
 const router = require("express").Router();
 
-router.get(
-  "/",
+router.get("/", checkLogin, TeamControllers.getTeamsList);
+router.get("/me", checkLogin, TeamControllers.getMyTeams);
+
+router.delete(
+  "/remove/:id",
   checkLogin,
-  TeamControllers.getTeamsList
+  IDValidator(),
+  expressValidatormapper,
+  TeamControllers.removeTeam
 );
 
 router.post(
@@ -17,6 +23,13 @@ router.post(
   createTeamValidation(),
   expressValidatormapper,
   TeamControllers.createTeam
+);
+router.get(
+  "/:id",
+  checkLogin,
+  IDValidator(),
+  expressValidatormapper,
+  TeamControllers.getTeamById
 );
 
 module.exports = {
