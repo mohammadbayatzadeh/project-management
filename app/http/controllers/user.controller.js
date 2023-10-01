@@ -44,7 +44,7 @@ class UserControllers {
   async postProfileimage(req, res, next) {
     try {
       const userID = req.user._id;
-      const filePath = req.file?.path.replace(/[\\\\]/gim, "/")
+      const filePath = req.file?.path.replace(/[\\\\]/gim, "/");
       const result = await userModel.updateOne(
         { _id: userID },
         { $set: { image: filePath } }
@@ -55,6 +55,24 @@ class UserControllers {
         status: 200,
         success: true,
         message: "تصویر با موفقیت ثبت شد",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+  async getAllResquests(req, res, next) {
+    try {
+      const userID = req.user._id;
+      const requests = await userModel.findOne(
+        { _id: userID },
+        {
+          inviterequests: 1,
+        }
+      );
+      return res.status(200).json({
+        stauts: 200,
+        success: true,
+        data: requests.inviterequests || [],
       });
     } catch (error) {
       next(error);

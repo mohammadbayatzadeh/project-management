@@ -1,7 +1,7 @@
 const { Schema, models, model, Types } = require("mongoose");
 
 const requestSchema = new Schema({
-  teamId: { type: Types.ObjectId, required: true },
+  teamID: { type: Types.ObjectId, required: true },
   caller: { type: String, required: true },
   requestDate: { type: Date, default: new Date() },
   state: { type: String, default: "pending" },

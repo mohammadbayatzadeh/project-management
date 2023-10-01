@@ -8,6 +8,7 @@ const router = require("express").Router();
 
 router.get("/profile", checkLogin, UserControllers.getProfile);
 router.patch("/profile", checkLogin, UserControllers.editProfile);
+router.get("/requests", checkLogin, UserControllers.getAllResquests);
 router.post(
   "/profile-image",
   checkLogin,
