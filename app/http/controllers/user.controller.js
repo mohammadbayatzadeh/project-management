@@ -78,6 +78,9 @@ class UserControllers {
       next(error);
     }
   }
+  async getPendingRequests(req, res, next) {}
+  async getAccesptedRequests(req, res, next) {}
+  async getRejectedRequests(req, res, next) {}
   addSkills() {}
   editSkills() {}
   acceptInvite() {}
