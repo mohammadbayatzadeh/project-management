@@ -110,6 +110,35 @@ class UserControllers {
       next(error);
     }
   }
+  async changeRequestStatus(req, res, next) {
+    try {
+      const { status, id } = req.params;
+      const userID = req.user._id;
+      const user = await userModel.findById(userID);
+      if (!user) throw { stauts: 404, message: "کاربر پیدا نشد" };
+      const findedRequest = user.inviterequests.find((item) => item._id == id);
+      if (!findedRequest)
+        throw { stauts: 404, message: "این درخواست دیگر موجود نیست" };
+      if (!["accepted", "rejected"].includes(status))
+        throw { status: 400, message: "این درخواست مجاز نیست" };
+      const updateRequest = await userModel.updateOne(
+        { 'inviterequests._id': id },
+        {
+          $set: { "inviterequests.$.state": status },
+        }
+      );
+
+      if (updateRequest.modifiedCount === 0)
+        throw { stauts: 400, message: "آپدیت موفقیت آمیز نبود" };
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "آپدیت موفقیت آمیز بود",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 
   addSkills() {}
   editSkills() {}
