@@ -1,3 +1,4 @@
+const { Types } = require("mongoose");
 const { teamModel } = require("../../models/team.model");
 const { userModel } = require("../../models/user.model");
 
@@ -119,7 +120,34 @@ class TeamControllers {
     }
   }
 
-  updateTeam() {}
+  async updateTeam(req, res, next) {
+    try {
+      const { id } = req.params;
+      const userId = req.user._id;
+      const data = req.body;
+
+      Object.keys(data).forEach((key) => {
+        if (!["title", "description"].includes(key)) delete data[key];
+        if (["", " ", NaN, null, undefined].includes(data[key]))
+          delete data[key];
+      });
+
+      if (!Object.keys(data).length)
+        throw { stauts: 400, message: "لطفا مقادیر معتبر ارسال کنید" };
+      const team = await teamModel.findOne({ _id: id, owner: userId });
+      if (!team) throw { status: 404, message: "تیمی با این مشخصات پیدا نشد" };
+      const editTeam = await teamModel.updateOne({ _id: id }, { $set: data });
+
+      if (editTeam.modifiedCount === 0)
+        throw { status: 400, message: "بروزرسانی انجام نشد" };
+
+      return res
+        .status(200)
+        .json({ status: 200, succes: true, message: "برزورسانی انجام شد" });
+    } catch (error) {
+      next(error);
+    }
+  }
   removeUserFromTeam() {}
 }
 

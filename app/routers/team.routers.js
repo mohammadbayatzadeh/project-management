@@ -31,6 +31,7 @@ router.get(
   expressValidatormapper,
   TeamControllers.getTeamById
 );
+router.patch("/update/:id", checkLogin, TeamControllers.updateTeam);
 
 router.post(
   "/requset/:username/:teamID",
