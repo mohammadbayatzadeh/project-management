@@ -1,4 +1,5 @@
 const { projectModel } = require("../../models/project.model");
+const { teamModel } = require("../../models/team.model");
 const { createLinkForFiles } = require("../../modules/functions");
 
 class ProjectControllers {
@@ -145,7 +146,23 @@ class ProjectControllers {
     }
   }
 
-  getProjectsOfTeam() {}
+  async getProjectsOfTeam(req, res, next) {
+    try {
+      const userId = req.user._id;
+      const team = await teamModel.findOne({
+        $or: [{ owner: userId }, { members: userId }],
+      });
+      if (!team) throw { stauts: 400, message: "شما عضو هیچ تیمی نیستید" };
+      const projects = await projectModel.find({ team: team._id });
+      if (!projects.length)
+        throw { status: 400, message: "تیم شما هیچ پروژه ای ندارد" };
+      return res
+        .status(200)
+        .json({ status: 200, success: true, data: projects });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = {

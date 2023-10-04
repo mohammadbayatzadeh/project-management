@@ -1,11 +1,36 @@
-const { Types } = require("mongoose");
 const { teamModel } = require("../../models/team.model");
 const { userModel } = require("../../models/user.model");
 
 class TeamControllers {
   async getTeamsList(req, res, next) {
     try {
-      const result = await teamModel.find();
+      const result = await teamModel.aggregate([
+        {
+          $lookup: {
+            from: "users",
+            localField: "owner",
+            foreignField: "_id",
+            as: "owner",
+          },
+        },
+        {
+          $unwind: "$owner",
+        },
+        {
+          $project: {
+            "owner.password": 0,
+            "owner.roles": 0,
+            "owner.skills": 0,
+            "owner.teams": 0,
+            "owner.token": 0,
+            "owner.createdAt": 0,
+            "owner.updatedAt": 0,
+            "owner.inviterequests": 0,
+            "owner.firstName": 0,
+            "owner.lastName": 0,
+          },
+        },
+      ]);
       return res.status(200).json({
         status: 200,
         success: true,
@@ -51,7 +76,7 @@ class TeamControllers {
         },
       ]);
 
-      if (!teams) throw { satus: 404, message: "هیچ تیمی یافت نشد" };
+      if (!teams.length) throw { satus: 404, message: "هیچ تیمی یافت نشد" };
       return res.status(200).json({ stauts: 200, success: true, data: teams });
     } catch (error) {
       next(error);
