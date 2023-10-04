@@ -18,11 +18,15 @@ class UserControllers {
     try {
       const data = req.body;
       const id = req.user._id;
-      const fields = ["firstName", "lastName", "mobile"];
+      const fields = ["firstName", "lastName", "mobile", "skills"];
       const badValues = ["", " ", null, NaN, -1, {}, []];
       Object.entries(data).forEach(([key, value]) => {
         if (!fields.includes(key)) delete data[key];
         if (badValues.includes(value)) delete data[key];
+        if (key === "skills") {
+          data.skills = data.skills.map((skill) => skill.trim());
+          data.skills = [...new Set(data.skills)];
+        }
       });
 
       const user = await userModel.findOneAndUpdate(
@@ -122,7 +126,7 @@ class UserControllers {
       if (!["accepted", "rejected"].includes(status))
         throw { status: 400, message: "این درخواست مجاز نیست" };
       const updateRequest = await userModel.updateOne(
-        { 'inviterequests._id': id },
+        { "inviterequests._id": id },
         {
           $set: { "inviterequests.$.state": status },
         }
@@ -140,8 +144,6 @@ class UserControllers {
     }
   }
 
-  addSkills() {}
-  editSkills() {}
   acceptInvite() {}
   rejectInvite() {}
 }
