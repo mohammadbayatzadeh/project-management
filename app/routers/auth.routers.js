@@ -3,8 +3,10 @@ const { AuthControllers } = require("../http/controllers/auth.controller");
 const {
   registerValidator,
   loginValidator,
+  resetPasswordValidator,
 } = require("../http/validations/auth.validation");
 const { expressValidatormapper } = require("../http/middlewares/checkErrors");
+const { checkLogin } = require("../http/middlewares/autoLogin");
 
 router.post(
   "/register",
@@ -18,6 +20,13 @@ router.post(
   loginValidator(),
   expressValidatormapper,
   AuthControllers.login
+);
+router.post(
+  "/change-password",
+  checkLogin,
+  resetPasswordValidator(),
+  expressValidatormapper,
+  AuthControllers.changePassword
 );
 
 module.exports = {

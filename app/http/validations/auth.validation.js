@@ -47,6 +47,7 @@ const registerValidator = (req, res, next) => {
       }),
   ];
 };
+
 const loginValidator = (req, res, next) => {
   return [
     body("username")
@@ -72,7 +73,23 @@ const loginValidator = (req, res, next) => {
       }),
   ];
 };
+
+const resetPasswordValidator = (req, res, next) => {
+  return [
+    body("password")
+      .isLength({ min: 5, max: 20 })
+      .withMessage(" رمز عبور باید بین 5 تا 20 کاراکتر باشد")
+      .custom((value, ctx) => {
+        if (!value) throw "رمز عبور نمی تواند خالی باشد";
+        if (value !== ctx?.req?.body?.confirm_password)
+          throw "رمز عبور ها همخوان نیستند";
+        return true;
+      }),
+  ];
+};
+
 module.exports = {
   registerValidator,
   loginValidator,
+  resetPasswordValidator,
 };

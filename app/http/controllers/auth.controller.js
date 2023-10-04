@@ -4,6 +4,7 @@ const {
   comparePasswords,
   generateToken,
 } = require("../../modules/functions");
+
 class AuthControllers {
   async register(req, res, next) {
     try {
@@ -20,6 +21,7 @@ class AuthControllers {
       next(err);
     }
   }
+
   async login(req, res, next) {
     try {
       const { username, password } = req.body;
@@ -40,7 +42,26 @@ class AuthControllers {
       next(err);
     }
   }
-  resetPassword() {}
+
+  async changePassword(req, res, next) {
+    try {
+      const { password } = req.body;
+      const id = req.user._id;
+      const hashedPassword = hashPassword(password);
+
+      const result = await userModel.updateOne(
+        { _id: id },
+        { $set: { password: hashedPassword } }
+      );
+      if (result.modifiedCount === 0)
+        throw { status: 400, message: "پسورد عوض نشد" };
+      return res
+        .status(200)
+        .json({ status: 200, success: true, message: "پسورد عوض شد" });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = {
