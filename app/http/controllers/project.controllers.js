@@ -27,8 +27,10 @@ class ProjectControllers {
 
   async getAllProjects(req, res, next) {
     try {
-      const owner = req.user._id;
-      const projects = await projectModel.find({ owner });
+      const projects = await projectModel.find({ private: false });
+      if (!projects.length)
+        throw { status: 404, message: "هیچ پروژه ای یاقت نشد" };
+
       for (const project of projects) {
         project.image = createLinkForFiles(project.image, req);
       }
@@ -124,8 +126,26 @@ class ProjectControllers {
     } catch (err) {}
   }
 
+  async getProjectsOfUser(req, res, next) {
+    try {
+      const owner = req.user._id;
+      const projects = await projectModel.find({ owner });
+      if (!projects.length)
+        throw { status: 400, message: "شما هیچ پروژه ای ندارید" };
+
+      for (const project of projects) {
+        project.image = createLinkForFiles(project.image, req);
+      }
+
+      return res
+        .status(200)
+        .json({ status: 200, success: true, data: projects });
+    } catch (err) {
+      next(err);
+    }
+  }
+
   getProjectsOfTeam() {}
-  getProjectsOfUser() {}
 }
 
 module.exports = {

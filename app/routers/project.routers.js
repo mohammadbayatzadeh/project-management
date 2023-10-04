@@ -12,6 +12,8 @@ const fileupload = require("express-fileupload");
 const { uploadFile } = require("../modules/express-fileupload");
 
 router.get("/", checkLogin, ProjectControllers.getAllProjects);
+router.get("/me", checkLogin, ProjectControllers.getProjectsOfUser);
+router.get("/team", checkLogin, ProjectControllers.getProjectsOfTeam);
 router.get(
   "/:id",
   checkLogin,
@@ -19,6 +21,7 @@ router.get(
   expressValidatormapper,
   ProjectControllers.getProjectByID
 );
+
 router.get(
   "/remove/:id",
   checkLogin,
@@ -26,6 +29,7 @@ router.get(
   expressValidatormapper,
   ProjectControllers.removeProject
 );
+
 router.post(
   "/edit/:id",
   checkLogin,
@@ -33,6 +37,7 @@ router.post(
   expressValidatormapper,
   ProjectControllers.updateProject
 );
+
 router.patch(
   "/edit-profileImage/:id",
   fileupload(),
@@ -42,8 +47,7 @@ router.patch(
   expressValidatormapper,
   ProjectControllers.updateProjectImage
 );
-router.get("/user", checkLogin, ProjectControllers.getProjectsOfUser);
-router.get("/team", checkLogin, ProjectControllers.getProjectsOfTeam);
+
 router.post(
   "/create",
   fileupload(),
