@@ -1,3 +1,4 @@
+const { teamModel } = require("../../models/team.model");
 const { userModel } = require("../../models/user.model");
 const { createLinkForFiles } = require("../../modules/functions");
 
@@ -125,36 +126,31 @@ class UserControllers {
         throw { stauts: 404, message: "این درخواست دیگر موجود نیست" };
       if (!["accepted", "rejected"].includes(status))
         throw { status: 400, message: "این درخواست مجاز نیست" };
-
       const filterRequests = user.inviterequests.filter(
         (item) => item._id != id
       );
+
       user.inviterequests = [...filterRequests];
       await user.save();
-      
+
       if (status === "rejected") {
         return res.status(200).json({
           status: 200,
           success: true,
-          message: " آمیز بود",
+          message: "درخواست رد شد ",
         });
-      }else {
-
+      } else {
+        const result = await teamModel.updateOne(
+          { _id: findedRequest.teamID },
+          { $push: { inviterequests: user } }
+        );
+        return res.status(200).json({
+          status: 200,
+          success: true,
+          message: "شما به تیم اضافه شدید ",
+        });
       }
-      // const updateRequest = await userModel.updateOne(
-      //   { "inviterequests._id": id },
-      //   {
-      //     $set: { "inviterequests.$.state": status },
-      //   }
-      // );
-
-      if (updateRequest.modifiedCount === 0)
-        throw { stauts: 400, message: "آپدیت موفقیت آمیز نبود" };
-      return res.status(200).json({
-        status: 200,
-        success: true,
-        message: "آپدیت موفقیت آمیز بود",
-      });
+      
     } catch (error) {
       next(error);
     }
