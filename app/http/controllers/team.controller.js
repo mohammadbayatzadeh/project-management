@@ -203,6 +203,7 @@ class TeamControllers {
       next(error);
     }
   }
+  
   removeUserFromTeam() {}
 }
 
