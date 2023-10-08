@@ -32,7 +32,13 @@ router.get(
   TeamControllers.getTeamById
 );
 router.patch("/update/:id", checkLogin, TeamControllers.updateTeam);
-
+router.delete(
+  "/remove-member/:id",
+  checkLogin,
+  IDValidator(),
+  expressValidatormapper,
+  TeamControllers.removeUserFromTeam
+);
 router.post(
   "/requset/:username/:teamID",
   checkLogin,

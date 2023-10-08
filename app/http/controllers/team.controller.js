@@ -203,8 +203,28 @@ class TeamControllers {
       next(error);
     }
   }
-  
-  removeUserFromTeam() {}
+
+  async removeUserFromTeam(req, res, next) {
+    try {
+      const owner = req.user._id;
+      const userID = req.params.id;
+      const team = await teamModel.findOne({ owner });
+      if (!team)
+        throw { stauts: 400, message: "شما اجازه انجام این عملیات را ندارید" };
+      const removeUser = team.members.find((item) => item._id == userID);
+      if (!removeUser) throw { stauts: 400, message: "این کاربر پیدا نشد" };
+      const filterRequest = team.members.filter((item) => item._id != userID);
+      team.members = [...filterRequest];
+      await team.save();
+      return res.status(200).json({
+        status: 200,
+        success: true,
+        message: "کاربر از تیم حذف شد",
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = {

@@ -150,14 +150,10 @@ class UserControllers {
           message: "شما به تیم اضافه شدید ",
         });
       }
-      
     } catch (error) {
       next(error);
     }
   }
-
-  acceptInvite() {}
-  rejectInvite() {}
 }
 
 module.exports = {
